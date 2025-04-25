@@ -1,0 +1,131 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@using SGBLApp.Core.Domain.Enum
+@model SGBLApp.Core.Application.DTOs.BookDto
+
+@{
+    ViewData["Title"] = "Crear";
+}
+
+    <div class="container mt-4">
+        <h2>@ViewData["Title"]</h2>
+
+        <form asp-action="Create" method="post" id="createForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row">
+                <!-- Columna Izquierda -->
+                <div class="col-md-6">
+                    <!-- Título -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Title" class="form-label">Título</label>
+                        <input asp-for="Title" class="form-control" placeholder="Ej: El gato con botas" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <!-- ISBN -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ISBN" class="form-label">ISBN</label>
+                        <input asp-for="ISBN" class="form-control" placeholder="Ej: 9781234567890 (Sin guiones)" />
+                        <span asp-validation-for="ISBN" class="text-danger"></span>
+                    </div>
+
+                    <!-- Año de Publicación -->
+                    <div class="form-group mb-3">
+                        <label asp-for="PublicationYear" class="form-label">Año de Publicación</label>
+                        <input asp-for="PublicationYear" class="form-control"
+                               type="number"
+                               min="1000"
+                               max="@DateTime.Now.Year"
+                               placeholder="Ej: 1967" />
+                        <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                    </div>
+
+                    <!-- Biblioteca -->
+                    <div class="form-group mb-3">
+                        <label asp-for="LibraryId" class="form-label">Biblioteca</label>
+                        <select asp-for="LibraryId" class="form-select" asp-items="Model.Libraries">
+                            <option value="">Seleccione una biblioteca</option>
+                        </select>
+                        <span asp-validation-for="LibraryId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Género -->
+                    <div class="form-group mb-3">
+                        <label asp-for="PrimaryGenreId" class="control-label text-white">Género Primario</label>
+                        <select asp-for="PrimaryGenreId" class="form-control" asp-items="Model.PrimaryGenres" required>
+                            <option value="">Seleccione un Género Primario</option>
+                        </select>
+                        <span asp-validation-for="PrimaryGenreId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="SecondaryGenreId" class="control-label text-white">Género Secundario</label>
+                        <select asp-for="SecondaryGenreId" class="form-control" asp-items="Model.SecondaryGenres">
+                            <option value="">Seleccione un Género Secundario</option>
+                        </select>
+                        <span asp-validation-for="SecondaryGenreId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha -->
+                <div class="col-md-6">
+                    <!-- Sinopsis -->
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="form-label">Sinopsis</label>
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="8"
+                                  placeholder="Escriba una breve descripción del libro"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                <div class="form-group">
+                    <label asp-for="Copies" class="form-label">
+                        <i class="fas fa-copy me-2"></i>Copias Totales
+                    </label>
+                    <input asp-for="Copies"
+                           class="form-control"
+                           type="number"
+                           min="1"
+                           required />
+                    <small class="form-text text-muted">
+                        Número total de copias físicas del libro
+                    </small>
+                    <span asp-validation-for="Copies" class="text-danger"></span>
+                </div>
+
+                    <!-- URL de la Imagen -->
+                    <div class="form-group mb-3">
+                        <label asp-for="ImageUrl" class="form-label">URL de la Imagen</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="Ej: https://example.com/image.jpg" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+
+                    <!-- Autor -->
+                    <div class="form-group mb-3">
+                        <label asp-for="AuthorId" class="control-label">Autor</label>
+                        <select asp-for="AuthorId" class="form-control" asp-items="Model.Authors" required>
+                            <option value="">Seleccione un autor</option>
+                        </select>
+                        <span asp-validation-for="AuthorId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón de Envío -->
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-success">
+                <i class="bi bi-check-square-fill"></i>
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-x-square-fill"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+@section Scripts {
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}

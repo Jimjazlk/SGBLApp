@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <div class="row">
+        <!-- Sección de Usuarios -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Usuarios</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Admin" asp-action="ManageUsers" class="btn btn-outline-light">Gestionar Usuarios</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Bibliotecas -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Bibliotecas</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Library" asp-action="Index" class="btn btn-outline-light">Gestionar Bibliotecas</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Préstamos -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Préstamos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Loan" asp-action="Index" class="btn btn-outline-light">Todos los Préstamos</a>
+                        <a asp-controller="Loan" asp-action="Pending" class="btn btn-outline-warning">Préstamos Pendientes</a>
+                        <a asp-controller="Loan" asp-action="Overdue" class="btn btn-outline-danger">Préstamos Vencidos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

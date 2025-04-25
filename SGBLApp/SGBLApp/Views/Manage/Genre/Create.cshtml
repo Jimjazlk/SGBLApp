@@ -1,0 +1,21 @@
+﻿@using SGBLApp.Core.Application.DTOs
+
+@model GenreDto
+@{
+    ViewData["Title"] = "Crear Género";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <form asp-action="Create">
+        <div class="form-group">
+            <label asp-for="Name" class="control-label">Nombre</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="form-group mt-3">
+            <input type="submit" value="Crear" class="btn btn-success" />
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,91 @@
+﻿@model IEnumerable<SGBLApp.Core.Application.DTOs.Loans.LoanDto>
+@{
+    ViewData["Title"] = "Gestión de Préstamos";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="mb-4">
+        <a asp-action="Pending" class="btn btn-primary">Préstamos Pendientes</a>
+        <a asp-action="Overdue" class="btn btn-danger">Préstamos Vencidos</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No hay préstamos registrados.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Libro</th>
+                        <th>Usuario</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Devolución</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in Model)
+                    {
+                        <tr class="@(loan.IsOverdue ? "table-danger" : "")">
+                            <td>@loan.BookTitle</td>
+                            <td>@loan.UserName</td>
+                            <td>@loan.LoanDate.ToShortDateString()</td>
+                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>
+                                @switch (loan.Status)
+                                {
+                                    case SGBLApp.Core.Domain.Enum.LoanStatus.Pendiente:
+                                        <span class="badge bg-warning">Pendiente</span>
+                                        break;
+                                    case SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado:
+                                        if (loan.IsOverdue)
+                                        {
+                                            <span class="badge bg-danger">Vencido</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Activo</span>
+                                        }
+                                        break;
+                                    case SGBLApp.Core.Domain.Enum.LoanStatus.Rechazado:
+                                        <span class="badge bg-danger">Rechazado</span>
+                                        break;
+                                    case SGBLApp.Core.Domain.Enum.LoanStatus.Devuelto:
+                                        <span class="badge bg-secondary">Devuelto</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (loan.Status == SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado && loan.ReturnDate == null)
+                                {
+                                    <a asp-action="Return" asp-route-id="@loan.LoanId" class="btn btn-sm btn-primary">Devolver</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }

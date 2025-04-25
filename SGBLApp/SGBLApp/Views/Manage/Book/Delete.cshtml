@@ -1,0 +1,27 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@model BookDto
+
+<div class="container mt-4">
+    <h2>¿Eliminar Libro?</h2>
+    <div class="card bg-dark text-white">
+        <div class="card-body">
+            <h4 class="card-title">@Model.Title</h4>
+            <p class="card-text"><strong>ISBN:</strong> @Model.ISBN</p>
+            <p class="card-text"><strong>Año:</strong> @Model.PublicationYear</p>
+            <p class="card-text"><strong>Estado:</strong> @Model.Status</p>
+            <p class="card-text"><strong>Biblioteca:</strong> @Model.LibraryName</p>
+            <p class="card-text"><strong>Géneros:</strong> @Model.PrimaryGenreName, @Model.SecondaryGenreName</p>
+
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-thumbnail" width="150" />
+            }
+        </div>
+    </div>
+
+    <form asp-action="Delete" class="mt-3">
+        <input type="hidden" asp-for="BookId" />
+        <button type="submit" class="btn btn-danger">Confirmar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,86 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@using SGBLApp.Core.Domain.Enum
+@model IEnumerable<SGBLApp.Core.Application.DTOs.BookDto>
+@{
+    ViewData["Title"] = "Catálogo de Libros";
+}
+<div class="container mt-4">
+    <form asp-action="Index" method="get" class="mb-4">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="Title" class="form-control"
+                       placeholder="Buscar por título..."
+                       value="@Context.Request.Query["Title"]">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="Author" class="form-control"
+                       placeholder="Buscar por autor..."
+                       value="@Context.Request.Query["Author"]">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="Genre" class="form-control"
+                       placeholder="Buscar por género..."
+                       value="@Context.Request.Query["Genre"]">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-50"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+            <div class="col-md-1">
+                <a asp-action="Index" class="btn btn-secondary w-50"><i class="fa-solid fa-broom"></i></a>
+            </div>
+        </div>
+
+    </form>
+
+
+<div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var book in Model)
+        {
+            @Html.Partial("_BookCard", book)
+        }
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        async function sendFeedback(bookId, isLiked, btn) {
+            const tokenInput = document.querySelector("input[name='__RequestVerificationToken']");
+            const token = tokenInput ? tokenInput.value : "";
+
+            const response = await fetch('/Feedback/Vote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ bookId, isLiked })
+            });
+
+            if (response.ok) {
+                const buttons = btn.parentElement.querySelectorAll('.feedback-btn');
+                const label = document.getElementById(`feedback-label-${bookId}`);
+                const wasActive = btn.classList.contains('btn-success') || btn.classList.contains('btn-danger');
+
+                buttons.forEach(b => b.classList.remove('btn-success', 'btn-danger'));
+                buttons.forEach(b => b.classList.add('btn-outline-success', 'btn-outline-danger'));
+
+                if (wasActive) {
+                    label.innerHTML = '';
+                } else {
+                    if (isLiked) {
+                        btn.classList.remove('btn-outline-success');
+                        btn.classList.add('btn-success');
+                        label.innerHTML = '<span class="text-success">✔ Me gusta</span>';
+                    } else {
+                        btn.classList.remove('btn-outline-danger');
+                        btn.classList.add('btn-danger');
+                        label.innerHTML = '<span class="text-danger">✘ No me gusta</span>';
+                    }
+                }
+            }
+        }
+    </script>
+}

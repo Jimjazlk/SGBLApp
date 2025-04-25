@@ -1,0 +1,142 @@
+﻿@using SGBLApp.Core.Domain.Enum
+@model SGBLApp.Core.Application.DTOs.BookDto
+@{
+    ViewData["Title"] = "Detalles del Libro";
+}
+
+<div class="container py-4">
+    <div class="card border-0 shadow-lg text-white bg-black">
+        <div class="card-body text-white">
+            <div class="row g-4">
+                <!-- Portada del libro -->
+                <div class="col-md-4">
+                    <div class="position-relative">
+                        <img src="@Model.ImageUrl" alt="Portada de @Model.Title" class="img-fluid rounded shadow book-cover" />
+                        @if (Model.Status == BookStatus.Disponible && Model.AvailableCopies > 0)
+                        {
+                            <span class="position-absolute top-0 start-0 bg-success text-white px-3 py-1 rounded-end">
+                                <i class="fas fa-check-circle me-1"></i> Disponible
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="position-absolute top-0 start-0 bg-danger text-white px-3 py-1 rounded-end">
+                                <i class="fas fa-times-circle me-1"></i> No disponible
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Contador de copias -->
+                    <div class="mt-3 text-center">
+                        <div class="d-flex justify-content-center gap-4">
+                            <div>
+                                <span class="badge bg-primary rounded-pill p-2">
+                                    <i class="fas fa-copy me-1"></i> @Model.Copies totales
+                                </span>
+                            </div>
+                            <div>
+                                <span class="badge bg-success rounded-pill p-2">
+                                    <i class="fas fa-check-circle me-1"></i> @Model.AvailableCopies disponibles
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles del libro -->
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="mb-2">@Model.Title</h1>
+                            <h4 class="text-muted mb-4">Por @Model.AuthorName</h4>
+                        </div>
+                        <div>
+                            <a href="javascript:history.back();" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Volver
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Alertas -->
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
+                            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <!-- Sinopsis -->
+                    <div class="mb-4">
+                        <h5 class="border-bottom pb-2"><i class="fas fa-book-open me-2"></i>Sinopsis</h5>
+                        <p class="lead">@Model.Description</p>
+                    </div>
+
+                    <!-- Metadatos -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-black"><i class="fas fa-info-circle me-1"></i> Información</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2"><strong>ISBN:</strong> @Model.ISBN</li>
+                                        <li class="mb-2"><strong>Año:</strong> @Model.PublicationYear</li>
+                                        <li><strong>Biblioteca:</strong> @Model.LibraryName</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 h-100">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-black"><i class="fas fa-tags me-1"></i> Géneros</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <span class="badge bg-primary">@Model.PrimaryGenreName</span>
+                                        @if (!string.IsNullOrEmpty(Model.SecondaryGenreName))
+                                        {
+                                            <span class="badge bg-secondary">@Model.SecondaryGenreName</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acciones -->
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("User"))
+                    {
+                        <div class="d-flex gap-3">
+                            @if (Model.Status == BookStatus.Disponible && Model.AvailableCopies > 0)
+                            {
+                                <a asp-controller="Loan" asp-action="Request" asp-route-bookId="@Model.BookId"
+                                   class="btn btn-primary btn-lg flex-grow-1">
+                                    <i class="fas fa-book-reader me-2"></i> Solicitar Préstamo
+                                </a>
+                            }
+                            else if (Model.Status == BookStatus.NoDisponible)
+                            {
+                                <a asp-controller="Reservation" asp-action="Create" asp-route-bookId="@Model.BookId"
+                                   class="btn btn-warning btn-lg flex-grow-1">
+                                    <i class="fas fa-bookmark me-2"></i> Reservar
+                                </a>
+                            }
+                        </div>
+                    }
+                    else if(!User.Identity.IsAuthenticated)
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Inicia sesión para solicitar préstamos o reservas
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

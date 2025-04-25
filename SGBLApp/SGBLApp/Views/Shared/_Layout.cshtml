@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SGBLApp</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SGBLApp.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body class="bg-dark text-white">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-black shadow-sm">
+            <div class="container-fluid">
+                <img src="~/Black_Background.png" alt="Logo" style="height: 60px;" class="me-2" />
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Portal Literario</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Catalog" asp-action="Index">Catálogo</a>
+                        </li>
+                        @if (User.IsInRole("User"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Recommendation" asp-action="Index">Recomendaciones</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">
+                                    <i class="bi bi-person-plus"></i> Registrarse
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item d-flex align-items-center">
+                                <button class="btn btn-outline-light btn-sm ms-2" onclick="toggleSidebar()">☰</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="container-fluid">
+<div class="row">
+            @if (User.Identity.IsAuthenticated)
+            {
+            <div class="col-md-2 sidebar bg-black" id="sidebar">
+                <partial name="_SidebarPartial" />
+            </div>
+            <div class="col-md-10" id="mainContent">
+                <main role="main" class="pb-3">
+                        @RenderBody()
+                </main>
+            </div>
+            }
+            else
+            {
+            <div class="col-12">
+                <main role="main" class="pb-3">
+                        @RenderBody()
+                </main>
+            </div>
+            }
+</div>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container text-white-50">
+            &copy; @DateTime.Now.Year - Portal Literario
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const mainContent = document.getElementById("mainContent");
+
+            sidebar.classList.toggle("collapsed");
+
+            if (sidebar.classList.contains("collapsed")) {
+                mainContent.classList.remove("col-md-10");
+                mainContent.classList.add("col-md-12");
+            } else {
+                mainContent.classList.remove("col-md-12");
+                mainContent.classList.add("col-md-10");
+            }
+        }
+    </script>
+</body>
+</html>

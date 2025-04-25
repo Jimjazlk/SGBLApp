@@ -1,0 +1,19 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@model AuthorDto
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <h3>¿Estás seguro de que quieres eliminar este autor?</h3><br />
+    <div>
+        <h4>@Model.Name</h4>
+        <p>@Model.Biography</p>
+    </div>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="AuthorId" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

@@ -1,0 +1,19 @@
+﻿@using SGBLApp.Core.Application.DTOs
+
+@model GenreDto
+@{
+    ViewData["Title"] = "Eliminar Género";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <h3>¿Estás seguro de que quieres eliminar este género?</h3>
+    <div>
+        <h4>@Model.Name</h4>
+    </div>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="GenreId" />
+        <input type="submit" value="Eliminar" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

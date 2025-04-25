@@ -1,0 +1,156 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@using SGBLApp.Core.Domain.Enum
+@model SGBLApp.Core.Application.DTOs.BookDto
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="Edit" method="post" id="editForm">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="BookId" />
+
+        <div class="row">
+            <!-- Columna Izquierda -->
+            <div class="col-md-6">
+                <!-- Título -->
+                <div class="form-group mb-3">
+                    <label asp-for="Title" class="form-label">Título</label>
+                    <input asp-for="Title" class="form-control" placeholder="Ej: El gato con botas" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- ISBN -->
+                <div class="form-group mb-3">
+                    <label asp-for="ISBN" class="form-label">ISBN</label>
+                    <input asp-for="ISBN" class="form-control" placeholder="Ej: 9781234567890 (Sin guiones)" />
+                    <span asp-validation-for="ISBN" class="text-danger"></span>
+                </div>
+
+                <!-- Año de Publicación -->
+                <div class="form-group mb-3">
+                    <label asp-for="PublicationYear" class="form-label">Año de Publicación</label>
+                    <input asp-for="PublicationYear" class="form-control"
+                           type="number"
+                           min="1000"
+                           max="@DateTime.Now.Year"
+                           placeholder="Ej: 1967" />
+                    <span asp-validation-for="PublicationYear" class="text-danger"></span>
+                </div>
+
+                <!-- Biblioteca -->
+                <div class="form-group mb-3">
+                    <label asp-for="LibraryId" class="form-label">Biblioteca</label>
+                    <select asp-for="LibraryId" class="form-select" asp-items="Model.Libraries">
+                        <option value="">Seleccione una biblioteca</option>
+                    </select>
+                    <span asp-validation-for="LibraryId" class="text-danger"></span>
+                </div>
+
+                <!-- Género -->
+                <div class="form-group mb-3">
+                    <label asp-for="PrimaryGenreId" class="control-label text-white">Género Primario</label>
+                    <select asp-for="PrimaryGenreId" class="form-control" asp-items="Model.PrimaryGenres" required>
+                        <option value="">Seleccione un Género Primario</option>
+                    </select>
+                    <span asp-validation-for="PrimaryGenreId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="SecondaryGenreId" class="control-label text-white">Género Secundario</label>
+                    <select asp-for="SecondaryGenreId" class="form-control" asp-items="Model.SecondaryGenres">
+                        <option value="">Seleccione un Género Secundario</option>
+                    </select>
+                    <span asp-validation-for="SecondaryGenreId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- Columna Derecha -->
+            <div class="col-md-6">
+                <!-- Sinopsis -->
+                <div class="form-group mb-3">
+                    <label asp-for="Description" class="form-label">Sinopsis</label>
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="6"
+                              placeholder="Escriba una breve descripción del libro"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <!-- URL de la Imagen -->
+                <div class="form-group mb-3">
+                    <label asp-for="ImageUrl" class="form-label">URL de la Imagen</label>
+                    <input asp-for="ImageUrl" class="form-control" placeholder="Ej: https://example.com/image.jpg" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Copies" class="form-label">Copias Totales</label>
+                        <input asp-for="Copies"
+                               class="form-control"
+                               type="number"
+                               min="1"
+                               required />
+                        <span asp-validation-for="Copies" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="AvailableCopies" class="form-label">Copias Disponibles</label>
+                        <input asp-for="AvailableCopies"
+                               class="form-control"
+                               type="number"
+                               min="0"
+                               max="@Model.Copies"
+                               oninput="validateCopies(this)" />
+                        <span asp-validation-for="AvailableCopies" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Autor -->
+                <div class="form-group mb-3">
+                    <label asp-for="AuthorId" class="control-label">Autor</label>
+                    <select asp-for="AuthorId" class="form-control" asp-items="Model.Authors" required>
+                        <option value="">Seleccione un autor</option>
+                    </select>
+                    <span asp-validation-for="AuthorId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botón de Envío -->
+        <div class="form-group mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-x-square-fill"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <!-- FontAwesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <script>
+        function validateCopies(input) {
+            const copies = parseInt(document.getElementById('Copies').value) || 0;
+            const available = parseInt(input.value) || 0;
+
+            if (available > copies) {
+                input.setCustomValidity('No puede exceder las copias totales');
+                input.classList.add('is-invalid');
+            } else {
+                input.setCustomValidity('');
+                input.classList.remove('is-invalid');
+            }
+        }
+    </script>
+}

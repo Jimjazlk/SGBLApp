@@ -1,0 +1,87 @@
+﻿@model SGBLApp.Core.Application.DTOs.Loans.LoanReturnDto
+@{
+    ViewData["Title"] = "Registrar Devolución";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Información del Préstamo</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ConfirmReturn" method="post">
+                        <input asp-for="LoanId" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="BookTitle" class="form-label">Libro</label>
+                            <input asp-for="BookTitle" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label">Usuario</label>
+                            <input asp-for="UserName" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LoanDate" class="form-label">Fecha de Préstamo</label>
+                            <input asp-for="LoanDate" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DueDate" class="form-label">Fecha Límite</label>
+                            <input asp-for="DueDate" class="form-control" readonly />
+                            @if (Model.IsOverdue)
+                            {
+                                <small class="text-danger">El préstamo está vencido.</small>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ReturnDate" class="form-label">Fecha de Devolución</label>
+                            <input asp-for="ReturnDate" class="form-control" type="date" required />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Confirmar Devolución</button>
+                            <a href="javascript:history.back();" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Estado del Préstamo</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert @(Model.IsOverdue ? "alert-danger" : "alert-success")">
+                        @if (Model.IsOverdue)
+                        {
+                            <p><strong>Préstamo Vencido</strong></p>
+                            <p>El libro debió devolverse el @Model.DueDate.ToShortDateString().</p>
+                            <p>El usuario podría tener restricciones para solicitar nuevos préstamos hasta regularizar su situación.</p>
+                        }
+                        else
+                        {
+                            <p><strong>Préstamo Regular</strong></p>
+                            <p>El libro se devuelve dentro del período establecido.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

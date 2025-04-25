@@ -1,0 +1,104 @@
+﻿@using Microsoft.AspNetCore.Html
+@model IEnumerable<SGBLApp.Core.Application.DTOs.Loans.LoanDto>
+@{
+    ViewData["Title"] = "Mis Préstamos";
+}
+
+<div class="container mt-4">
+    <header class="mb-4">
+        <h2 class="text-center mb-4">
+            <i class="fas fa-book-open me-2"></i>@ViewData["Title"]
+        </h2>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </header>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle me-2"></i>
+            No tienes préstamos registrados.
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var loan in Model)
+            {
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm @(loan.IsOverdue ? "border-danger" : "")">
+                        <div class="card-header @GetLoanStatusBackground(loan.Status)">
+                            <h5 class="card-title mb-0 text-white">
+                                <i class="fas fa-book me-2"></i>
+                                @loan.BookTitle
+                            </h5>
+                        </div>
+
+                        <div class="card-body text-white">
+                            <ul class="list-unstyled mb-0">
+                                <li class="mb-2">
+                                    <i class="far fa-calendar-check me-2"></i>
+                                    <strong>Préstamo:</strong> @loan.LoanDate.ToString("dd/MM/yyyy")
+                                </li>
+                                <li class="mb-2">
+                                    <i class="far fa-calendar-times me-2"></i>
+                                    <strong>Devolución:</strong> @loan.DueDate.ToString("dd/MM/yyyy")
+                                </li>
+                                <li>
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Estado:</strong> @GetLoanStatusBadge(loan)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    string GetLoanStatusBackground(SGBLApp.Core.Domain.Enum.LoanStatus status)
+    {
+        return status switch
+        {
+            SGBLApp.Core.Domain.Enum.LoanStatus.Pendiente => "bg-warning",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado => "bg-success",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Rechazado => "bg-danger",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Devuelto => "bg-secondary",
+            _ => "bg-primary"
+        };
+    }
+
+    IHtmlContent GetLoanStatusBadge(SGBLApp.Core.Application.DTOs.Loans.LoanDto loan)
+    {
+        var status = loan.Status switch
+        {
+            SGBLApp.Core.Domain.Enum.LoanStatus.Pendiente => ("Pendiente", "warning"),
+            SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado => loan.IsOverdue
+                ? ("Vencido", "danger")
+                : ("Activo", "success"),
+            SGBLApp.Core.Domain.Enum.LoanStatus.Rechazado => ("Rechazado", "danger"),
+            SGBLApp.Core.Domain.Enum.LoanStatus.Devuelto => ("Devuelto", "secondary"),
+            _ => ("Desconocido", "primary")
+        };
+
+        return new HtmlString(
+            $"<span class='badge bg-{status.Item2}'>{status.Item1}</span>"
+        );
+    }
+}

@@ -1,0 +1,73 @@
+﻿@using System.Security.Claims
+@model SGBLApp.Core.Application.DTOs.Reservation.ReservationRequestDto
+@{
+    ViewData["Title"] = "Nueva Reserva";
+}
+
+<div class="container">
+    <h2>@ViewData["Title"]</h2>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="BookId" />
+                <input type="hidden" asp-for="UserId" value="@User.FindFirstValue(ClaimTypes.NameIdentifier)" />
+
+
+                <div class="card">
+                    <div class="card-body text-white">
+                        <h5 class="card-title">Confirmar Reserva</h5>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> El libro estará reservado por 48 horas
+                            una vez disponible
+                        </div>
+
+                        <div class="form-group mt-4 text-white">
+                            <button type="submit" class="btn btn-primary">
+                                Confirmar Reserva
+                            </button>
+                            <a href="@Url.Action("Details", "Catalog", new { id = Model.BookId })"
+                               class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card text-white">
+                <div class="card-header">Detalles del Libro</div>
+                <div class="card-body">
+                    @if (ViewBag.BookTitle != null)
+                    {
+                        <p class="card-text">Libro solicitado: <strong>@ViewBag.BookTitle</strong></p>
+                        <p class="card-text">Autor: @ViewBag.AuthorName</p>
+                        <p class="card-text">Biblioteca: @ViewBag.LibraryName</p>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">Información del libro no disponible</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

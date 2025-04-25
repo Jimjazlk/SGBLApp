@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Panel de Gestión";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <div class="row mt-4">
+        <!-- Autores -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="bi bi-person-badge"></i> Autores</h5>
+                    <p class="card-text">Gestiona la lista de autores de los libros.</p>
+                    <a asp-controller="ManageAuthors" asp-action="Index" class="btn btn-primary">Ir a Autores</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Géneros -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="bi bi-bookmark"></i> Géneros</h5>
+                    <p class="card-text">Administra los géneros literarios disponibles.</p>
+                    <a asp-controller="ManageGenres" asp-action="Index" class="btn btn-primary">Ir a Géneros</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Libros -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-body text-center">
+                    <h5 class="card-title"><i class="bi bi-book"></i> Libros</h5>
+                    <p class="card-text">Administra el catálogo completo de libros.</p>
+                    <a asp-controller="ManageBooks" asp-action="Index" class="btn btn-primary">Ir a Libros</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección de Préstamos -->
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Préstamos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Loan" asp-action="Index" class="btn btn-outline-light">Todos los Préstamos</a>
+                        <a asp-controller="Loan" asp-action="Pending" class="btn btn-outline-warning">Préstamos Pendientes</a>
+                        <a asp-controller="Loan" asp-action="Overdue" class="btn btn-outline-danger">Préstamos Vencidos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

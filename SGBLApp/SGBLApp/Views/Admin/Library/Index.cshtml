@@ -1,0 +1,29 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@model IEnumerable<LibraryDto>
+
+<div class="container mt-4">
+    <h2>Bibliotecas</h2>
+    <a asp-action="Create" class="btn btn-success mb-3">Crear Nueva</a>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Ubicación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var library in Model)
+            {
+                <tr>
+                    <td>@library.Name</td>
+                    <td>@library.Location</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@library.LibraryId" class="btn btn-warning btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@library.LibraryId" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

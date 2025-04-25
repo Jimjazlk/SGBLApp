@@ -1,0 +1,219 @@
+﻿@model SGBLApp.Core.Application.DTOs.RecommendationDto
+
+@{
+    ViewBag.Title = "Tus Recomendaciones";
+}
+
+<div id="recommendations-container" class="container mt-4">
+
+    <!-- Sección 1: Basadas en tu historial -->
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fas fa-book"></i> Basadas en tu historial</h2>
+            <div class="nav-arrows">
+                <button class="nav-arrow left-arrow" onclick="scrollSection('personalized', -300)"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-arrow right-arrow" onclick="scrollSection('personalized', 300)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        @if (Model.PersonalizedRecommendations?.Any() == true)
+        {
+            <div id="personalized" class="scrolling-wrapper">
+                @foreach (var book in Model.PersonalizedRecommendations)
+                {
+                    <div class="card recommendation-card bg-dark text-white">
+                        <div class="card-img-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="book-meta">
+                                <span class="text-muted">@book.PublicationYear</span>
+                                <span>@book.AuthorName</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm @(book.UserLiked == true ? "btn-success" : "btn-outline-success")">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                                <button class="btn btn-sm @(book.UserLiked == false ? "btn-danger" : "btn-outline-danger")">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No se encontraron recomendaciones personalizadas.</p>
+        }
+    </div>
+
+    <!-- Sección 2: Más leídos -->
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fas fa-fire"></i> Más leídos</h2>
+            <div class="nav-arrows">
+                <button class="nav-arrow left-arrow" onclick="scrollSection('popular', -300)"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-arrow right-arrow" onclick="scrollSection('popular', 300)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        @if (Model.PopularRecommendations?.Any() == true)
+        {
+            <div id="popular" class="scrolling-wrapper">
+                @foreach (var book in Model.PopularRecommendations)
+                {
+                    <div class="card recommendation-card bg-dark text-white">
+                        <div class="card-img-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="book-meta">
+                                <span class="text-muted">@book.PublicationYear</span>
+                                <span>@book.AuthorName</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm @(book.UserLiked == true ? "btn-success" : "btn-outline-success")">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                                <button class="btn btn-sm @(book.UserLiked == false ? "btn-danger" : "btn-outline-danger")">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No se encontraron libros populares recientes.</p>
+        }
+    </div>
+
+    <!-- Sección 3: Usuarios con gustos similares -->
+    <div class="section-container">
+        <div class="section-header">
+            <h2><i class="fas fa-users"></i> Usuarios con gustos similares</h2>
+            <div class="nav-arrows">
+                <button class="nav-arrow left-arrow" onclick="scrollSection('collaborative', -300)"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-arrow right-arrow" onclick="scrollSection('collaborative', 300)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        @if (Model.CollaborativeRecommendations?.Any() == true)
+        {
+            <div id="collaborative" class="scrolling-wrapper">
+                @foreach (var book in Model.CollaborativeRecommendations)
+                {
+                    <div class="card recommendation-card bg-dark text-white">
+                        <div class="card-img-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="book-meta">
+                                <span class="text-muted">@book.PublicationYear</span>
+                                <span>@book.AuthorName</span>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm @(book.UserLiked == true ? "btn-success" : "btn-outline-success")">
+                                    <i class="fas fa-thumbs-up"></i>
+                                </button>
+                                <button class="btn btn-sm @(book.UserLiked == false ? "btn-danger" : "btn-outline-danger")">
+                                    <i class="fas fa-thumbs-down"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>No se encontraron recomendaciones colaborativas por ahora.</p>
+        }
+    </div>
+
+    <!-- Sección 4: Libros que te gustaron -->
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="text-success"><i class="fas fa-heart"></i> Libros que te gustaron</h2>
+            <div class="nav-arrows">
+                <button class="nav-arrow left-arrow" onclick="scrollSection('liked', -300)"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-arrow right-arrow" onclick="scrollSection('liked', 300)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        @if (Model.LikedBooks?.Any() == true)
+        {
+            <div id="liked" class="scrolling-wrapper">
+                @foreach (var book in Model.LikedBooks)
+                {
+                    <div class="card recommendation-card bg-dark text-white">
+                        <div class="card-img-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="book-meta">
+                                <span>@book.AuthorName</span>
+                            </div>
+                            <span class="badge bg-success"><i class="fas fa-check"></i> Me gusta</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No se encontraron libros que hayas marcado como me gusta.</p>
+        }
+    </div>
+
+    <!-- Sección 5: Libros que no te gustaron -->
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="text-danger"><i class="fas fa-heart-broken"></i> Libros que no te gustaron</h2>
+            <div class="nav-arrows">
+                <button class="nav-arrow left-arrow" onclick="scrollSection('disliked', -300)"><i class="fas fa-chevron-left"></i></button>
+                <button class="nav-arrow right-arrow" onclick="scrollSection('disliked', 300)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        @if (Model.DislikedBooks?.Any() == true)
+        {
+            <div id="disliked" class="scrolling-wrapper">
+                @foreach (var book in Model.DislikedBooks)
+                {
+                    <div class="card recommendation-card bg-dark text-white">
+                        <div class="card-img-container">
+                            <img src="@book.ImageUrl" alt="@book.Title" />
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@book.Title</h5>
+                            <div class="book-meta">
+                                <span>@book.AuthorName</span>
+                            </div>
+                            <span class="badge bg-danger"><i class="fas fa-times"></i> No me gusta</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="text-muted">No se encontraron libros que hayas marcado como no me gusta.</p>
+        }
+    </div>
+</div>
+
+<script>
+    function scrollSection(sectionId, amount) {
+        const section = document.getElementById(sectionId);
+        section.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+</script>

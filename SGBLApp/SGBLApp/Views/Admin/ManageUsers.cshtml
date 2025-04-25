@@ -1,0 +1,46 @@
+﻿@model List<SGBLApp.Core.Application.DTOs.User.UserRoleDto>
+
+@{
+    ViewData["Title"] = "Gestionar usuarios";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Correo</th>
+                <th>Nombre</th>
+                <th>Rol actual</th>
+                <th>Nuevo rol</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model[i].Email
+                        <input type="hidden" asp-for="@Model[i].UserId" />
+                        <input type="hidden" asp-for="@Model[i].Email" />
+                        <input type="hidden" asp-for="@Model[i].Name" />
+                        <input type="hidden" asp-for="@Model[i].Roles" />
+                    </td>
+                    <td>@Model[i].Name</td>
+                    <td>@Model[i].SelectedRole</td>
+                    <td>
+                        <select asp-for="@Model[i].SelectedRole"
+                                asp-items="@Model[i].Roles"
+                                class="form-control">
+                            <option value="">-- Select Role --</option>
+                        </select>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+</form>

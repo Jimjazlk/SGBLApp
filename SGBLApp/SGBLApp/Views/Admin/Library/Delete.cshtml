@@ -1,0 +1,33 @@
+﻿@using SGBLApp.Core.Application.DTOs
+@model LibraryDto
+
+<div class="container mt-4">
+    <h2>Eliminar Biblioteca</h2>
+
+    <h3>¿Estás seguro que quieres eliminar esta biblioteca?</h3>
+    <div>
+        <h4>Detalles de la Biblioteca</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+        </dl>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="LibraryId" />
+            <input type="submit" value="Eliminar" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

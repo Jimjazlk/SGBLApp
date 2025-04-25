@@ -1,0 +1,76 @@
+﻿@model SGBLApp.Core.Application.DTOs.Loans.LoanRequestDto
+@{
+    ViewData["Title"] = "Solicitar Préstamo";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Información del Préstamo</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="ConfirmRequest" method="post">
+                        <input asp-for="BookId" type="hidden" />
+                        <input asp-for="UserId" type="hidden" />
+
+                        <div class="mb-3">
+                            <label asp-for="BookTitle" class="form-label">Libro</label>
+                            <input asp-for="BookTitle" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label">Usuario</label>
+                            <input asp-for="UserName" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LoanDate" class="form-label">Fecha de Préstamo</label>
+                            <input asp-for="LoanDate" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DueDate" class="form-label">Fecha de Devolución</label>
+                            <input asp-for="DueDate" class="form-control" type="date" required />
+                        </div>
+
+                        <div class="alert alert-info">
+                            <p><strong>Nota:</strong> Al solicitar este préstamo, te comprometes a devolver el libro antes de la fecha indicada.</p>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Confirmar Solicitud</button>
+                            <a href="javascript:history.back();" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card bg-dark text-white">
+                <div class="card-header">
+                    <h5>Reglas de Préstamo</h5>
+                </div>
+                <div class="card-body">
+                    <ul>
+                        <li>Puedes tener hasta <strong>3 libros</strong> prestados simultáneamente.</li>
+                        <li>El período máximo de préstamo es de <strong>21 días</strong>.</li>
+                        <li>No podrás solicitar más préstamos si tienes libros con devolución vencida.</li>
+                        <li>Es responsabilidad del usuario mantener el libro en buen estado.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

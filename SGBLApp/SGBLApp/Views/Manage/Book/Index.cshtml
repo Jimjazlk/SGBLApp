@@ -1,0 +1,85 @@
+﻿@using SGBLApp.Core.Domain.Enum;
+@model IEnumerable<SGBLApp.Core.Application.DTOs.BookDto>
+
+@{
+    ViewData["Title"] = "Gestión de Libros";
+}
+
+<div class="container mt-10">
+    <h2>@ViewData["Title"]</h2>
+    <a asp-action="Create" class="btn btn-success mb-3">Crear Nuevo</a>
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>ISBN</th>
+                <th>Año</th>
+                <th class="text-center">Copias</th>
+                <th class="text-center">Disponibles</th>
+                <th>Estado</th>
+                <th>Género</th>
+                <th>Biblioteca</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var book in Model)
+            {
+                <tr>
+                    <td>@book.Title</td>
+                    <td>@book.AuthorName</td>
+                    <td>@FormatISBN(book.ISBN)</td>
+                    <td>@book.PublicationYear</td>
+                    <td class="text-center">@book.Copies</td>
+                    <td class="text-center">@book.AvailableCopies</td>
+                    <td>
+                        <span class="badge @GetStatusBadge(book.Status)">
+                            @GetStatusText(book.Status)
+                        </span>
+                    </td>
+                    <td>@book.PrimaryGenreName</td>
+                    <td>@book.LibraryName</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@book.BookId"
+                           class="btn btn-warning btn-sm" title="Editar">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@book.BookId"
+                           class="btn btn-danger btn-sm" title="Eliminar">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+
+    <!-- FontAwesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+}
+
+@functions {
+    string FormatISBN(string isbn) =>
+        isbn.Length == 13 ? $"{isbn.Substring(0, 3)}-{isbn.Substring(3, 10)}" : isbn;
+
+    string GetStatusBadge(BookStatus status) => status switch
+    {
+        BookStatus.Disponible => "bg-success",
+        BookStatus.Prestado => "bg-warning",
+        BookStatus.NoDisponible => "bg-danger",
+        _ => "bg-secondary"
+    };
+
+    string GetStatusText(BookStatus status) => status switch
+    {
+        BookStatus.Disponible => "Disponible",
+        BookStatus.Prestado => "Prestado",
+        BookStatus.NoDisponible => "No Disponible",
+        _ => "Desconocido"
+    };
+}

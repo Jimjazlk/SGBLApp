@@ -1,0 +1,138 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.RazorPages
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    .login-container {
+        background: url('https://images.unsplash.com/photo-1535905748047-14b2415c77d5?q=80&w=2050&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .login-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 0;
+    }
+
+    .glass-card {
+        background: rgba(15, 15, 15, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+        z-index: 1;
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem;
+        color: white;
+    }
+
+    .glass-card h2 {
+        color: white;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+    .glass-card .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .glass-card .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .glass-card .form-check-input {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .glass-card .btn-primary {
+        background-color: rgba(13, 110, 253, 0.8);
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .glass-card .btn-primary:hover {
+        background-color: rgba(13, 110, 253, 1);
+        transform: translateY(-2px);
+    }
+
+    .text-muted {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+</style>
+
+<div class="login-container">
+    <div class="glass-card">
+        <h2>Login</h2>
+
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label text-muted">Correo electrónico</label>
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label text-muted">Contraseña</label>
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input class="form-check-input" asp-for="Input.RememberMe" />
+                <label class="form-check-label text-muted" asp-for="Input.RememberMe">
+                    Recuérdame
+                </label>
+            </div>
+
+            <div class="mb-4 text-end">
+                <a id="forgot-password" asp-page="./ForgotPassword" class="text-decoration-none text-primary">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+
+            <button id="login-submit" type="submit" class="w-100 btn btn-primary mb-3">
+                Log in
+            </button>
+
+            <div class="text-center">
+                <p class="text-muted">
+                    ¿No tienes cuenta aún?
+                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-decoration-none text-primary">
+                        ¡Regístrate!
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

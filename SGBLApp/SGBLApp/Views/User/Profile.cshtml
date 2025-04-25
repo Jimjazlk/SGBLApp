@@ -1,0 +1,171 @@
+﻿@using SGBLApp.Core.Application.DTOs.User
+@using SGBLApp.Core.Domain.Enum
+
+@model UserProfileDto
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<div class="container mt-4">
+    <!-- Encabezado con información del usuario -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0"><i class="fas fa-user-circle me-2"></i>@ViewData["Title"]</h2>
+            <small class="text-muted">Último acceso: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+        <div class="text-end">
+            <div class="d-flex align-items-center">
+                <div class="me-3 text-end">
+                    <p class="mb-1 fs-5"><strong>@Model.Name.ToUpper()</strong></p>
+                    <small class="text-muted">@Model.Email</small>
+                </div>
+                <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <span class="fs-4 text-white">@Model.Name.Substring(0, 1).ToUpper()</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de préstamos -->
+    <div class="card mb-4 border-0 shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-book-reader me-2"></i>Mis Préstamos</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.ActiveLoans.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var loan in Model.ActiveLoans)
+                    {
+                        <div class="list-group-item list-group-item-action bg-dark text-white border-bottom">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="mb-1 w-75">
+                                    <h6 class="mb-1">@loan.BookTitle</h6>
+                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                        <span class="badge @GetLoanStatusClass(loan.Status, loan.IsOverdue)">
+                                            @GetLoanStatusText(loan.Status, loan.IsOverdue)
+                                        </span>
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar-alt me-1"></i>
+                                            @loan.LoanDate.ToString("dd/MM/yyyy")
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-undo me-1"></i>
+                                            @loan.DueDate.ToString("dd/MM/yyyy")
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">#@loan.LoanId</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-book-open fa-4x text-muted mb-3"></i>
+                    <h5 class="text-white-50">No tienes préstamos activos</h5>
+                    <p class="text-muted">Visita nuestro catálogo para solicitar nuevos préstamos</p>
+                    <a href="@Url.Action("Index", "Catalog")" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i>Explorar Catálogo
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Sección de reservas -->
+    <div class="card border-0 shadow">
+        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-bookmark me-2"></i>Mis Reservas</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.ActiveReservations.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var reservation in Model.ActiveReservations)
+                    {
+                        <div class="list-group-item list-group-item-action bg-dark text-white border-bottom">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div class="mb-1 w-75">
+                                    <h6 class="mb-1">@reservation.BookTitle</h6>
+                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                        <span class="badge @GetReservationStatusClass(reservation.Status)">
+                                            @reservation.Status
+                                        </span>
+                                        <small class="text-muted">
+                                            <i class="far fa-calendar-check me-1"></i>
+                                            @reservation.ReservationDate.ToString("dd/MM/yyyy")
+                                        </small>
+                                        @if (reservation.ExpirationDate.HasValue)
+                                        {
+                                            <small class="@(reservation.ExpirationDate < DateTime.Now ? "text-danger" : "text-muted")">
+                                                <i class="far fa-clock me-1"></i>
+                                                @reservation.ExpirationDate.Value.ToString("dd/MM/yyyy HH:mm")
+                                            </small>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">#@reservation.ReservationId</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <i class="fas fa-bookmark fa-4x text-muted mb-3"></i>
+                    <h5 class="text-white-50">No tienes reservas activas</h5>
+                    <p class="text-muted">Reserva tus libros favoritos para asegurar tu copia</p>
+                    <a href="@Url.Action("Index", "Catalog")" class="btn btn-warning text-dark">
+                        <i class="fas fa-search me-1"></i>Explorar Catálogo
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetLoanStatusClass(SGBLApp.Core.Domain.Enum.LoanStatus status, bool isOverdue)
+    {
+        return status switch
+        {
+            SGBLApp.Core.Domain.Enum.LoanStatus.Pendiente => "bg-warning",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado => isOverdue ? "bg-danger" : "bg-success",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Rechazado => "bg-danger",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Devuelto => "bg-secondary",
+            _ => "bg-primary"
+        };
+    }
+
+    string GetLoanStatusText(SGBLApp.Core.Domain.Enum.LoanStatus status, bool isOverdue)
+    {
+        return status switch
+        {
+            SGBLApp.Core.Domain.Enum.LoanStatus.Pendiente => "Pendiente",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Aprobado => isOverdue ? "Vencido" : "Activo",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Rechazado => "Rechazado",
+            SGBLApp.Core.Domain.Enum.LoanStatus.Devuelto => "Devuelto",
+            _ => "Desconocido"
+        };
+    }
+
+    string GetReservationStatusClass(ReservationStatus status)
+    {
+        return status switch
+        {
+            ReservationStatus.Pendiente => "bg-warning",
+            ReservationStatus.Disponible => "bg-success",
+            ReservationStatus.Cancelada => "bg-danger",
+            ReservationStatus.Expirada => "bg-secondary",
+            _ => "bg-primary"
+        };
+    }
+}

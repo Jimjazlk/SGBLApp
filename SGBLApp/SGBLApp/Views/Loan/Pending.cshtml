@@ -1,0 +1,99 @@
+﻿
+@model IEnumerable<SGBLApp.Core.Application.DTOs.Loans.LoanDto>
+@{
+    ViewData["Title"] = "Préstamos Pendientes";
+}
+
+<div class="container">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="mb-4">
+        <a asp-action="Index" class="btn btn-secondary">Volver a Préstamos</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No hay préstamos pendientes de aprobación.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>Libro</th>
+                        <th>Usuario</th>
+                        <th>Fecha Solicitud</th>
+                        <th>Fecha Devolución</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var loan in Model)
+                    {
+                        <tr>
+                            <td>@loan.BookTitle</td>
+                            <td>@loan.UserName</td>
+                            <td>@loan.LoanDate.ToShortDateString()</td>
+                            <td>@loan.DueDate.ToShortDateString()</td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <form asp-action="Approve" method="post">
+                                        <input type="hidden" name="id" value="@loan.LoanId" />
+                                        <button type="submit" class="btn btn-success btn-sm">Aprobar</button>
+                                    </form>
+
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#rejectModal@(loan.LoanId)">
+                                        Rechazar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Modal para rechazar -->
+                        <div class="modal fade" id="rejectModal@(loan.LoanId)" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content bg-dark text-white">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Rechazar Préstamo</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form asp-action="Reject" method="post">
+                                        <div class="modal-body">
+                                            <input type="hidden" name="id" value="@loan.LoanId" />
+                                            <div class="mb-3">
+                                                <label for="reason" class="form-label">Motivo del rechazo</label>
+                                                <textarea name="reason" class="form-control" rows="3" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-danger">Confirmar Rechazo</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
